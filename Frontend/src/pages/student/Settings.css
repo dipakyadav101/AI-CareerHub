@@ -1,0 +1,147 @@
+.settings-page {
+  min-height: 100vh;
+  background: #f7f8fc;
+  padding: 32px 24px 50px;
+}
+
+.settings-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.settings-header {
+  margin-bottom: 28px;
+}
+
+.settings-back-link {
+  display: inline-block;
+  margin-bottom: 16px;
+  color: #5b4bdb;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.settings-header h1 {
+  margin: 0;
+  color: #101828;
+  font-size: 32px;
+}
+
+.settings-header p {
+  margin: 8px 0 0;
+  color: #667085;
+  font-size: 14px;
+}
+
+.settings-card {
+  margin-bottom: 20px;
+  padding: 24px;
+  background: #ffffff;
+  border: 1px solid #eaecf0;
+  border-radius: 16px;
+}
+
+.settings-card-header {
+  padding-bottom: 18px;
+  border-bottom: 1px solid #eaecf0;
+}
+
+.settings-card-header h2 {
+  margin: 0;
+  color: #101828;
+  font-size: 19px;
+}
+
+.settings-card-header p {
+  margin: 6px 0 0;
+  color: #667085;
+  font-size: 13px;
+}
+
+.settings-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 0;
+  border-bottom: 1px solid #f0f2f5;
+}
+
+.settings-option:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.settings-option h3 {
+  margin: 0 0 5px;
+  color: #344054;
+  font-size: 14px;
+}
+
+.settings-option p {
+  margin: 0;
+  color: #667085;
+  font-size: 12px;
+}
+
+.settings-option input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: #5b4bdb;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.settings-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.settings-success {
+  color: #027a48;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.settings-save-button {
+  padding: 11px 18px;
+  border: none;
+  border-radius: 9px;
+  background: #5b4bdb;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.settings-save-button:hover {
+  background: #4d3dc8;
+}
+
+@media (max-width: 650px) {
+  .settings-page {
+    padding: 24px 15px 40px;
+  }
+
+  .settings-header h1 {
+    font-size: 27px;
+  }
+
+  .settings-card {
+    padding: 20px;
+  }
+
+  .settings-option {
+    align-items: flex-start;
+  }
+
+  .settings-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
