@@ -3,6 +3,20 @@ import { apiRequest } from "./api";
 const SESSION_KEY = "aiCareerHubSession";
 const TOKEN_KEY = "aiCareerHubToken";
 
+const USER_DATA_KEYS = [
+  "aiCareerHubResume",
+  "aiCareerHubResumeText",
+  "aiCareerHubResumeAnalysis",
+  "aiCareerHubInterviewScore",
+  "aiCareerHubSavedJobs",
+  "aiCareerHubCVData",
+  "aiCareerHubCVTemplate",
+];
+
+const clearUserData = () => {
+  USER_DATA_KEYS.forEach((key) => localStorage.removeItem(key));
+};
+
 /* ---------------------------------------------------------
  * Register a new user (calls Django backend)
  * Returns { success: boolean, message: string }
@@ -43,6 +57,8 @@ export const loginUser = async ({ email, password }) => {
       body: JSON.stringify({ email, password }),
     });
 
+    clearUserData();
+
     localStorage.setItem(TOKEN_KEY, data.token);
     localStorage.setItem(SESSION_KEY, JSON.stringify(data.user));
 
@@ -80,4 +96,5 @@ export const getCurrentUser = () => {
 export const logoutUser = () => {
   localStorage.removeItem(SESSION_KEY);
   localStorage.removeItem(TOKEN_KEY);
+  clearUserData();
 };

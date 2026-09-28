@@ -22,13 +22,21 @@ function Login() {
       return;
     }
 
-    const result = await loginUser({ email, password });
+       const result = await loginUser({ email, password });
 
     if (!result.success) {
       setErrorMessage(result.message);
       return;
     }
 
+    if (result.user && result.user.account_type === "company") {
+      setErrorMessage(
+        "Company accounts are coming soon. Please check back later."
+      );
+      return;
+    }
+
+    navigate("/student/dashboard");
     navigate("/student/dashboard");
   };
   return (

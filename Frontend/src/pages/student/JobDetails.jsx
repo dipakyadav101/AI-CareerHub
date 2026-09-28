@@ -8,6 +8,8 @@ import {
   CheckCircle,
   XCircle,
   FileText,
+  DollarSign,
+  MessageSquare,
 } from "lucide-react";
 
 function JobDetails() {
@@ -21,8 +23,11 @@ function JobDetails() {
   const [showMatch, setShowMatch] = useState(false);
   const [matchResult, setMatchResult] = useState(null);
   const [alreadyApplied, setAlreadyApplied] = useState(false);
-  const [applyError, setApplyError] = useState("");
-
+   const [applyError, setApplyError] = useState("");
+  const [isApplying, setIsApplying] = useState(false);
+  const hasResume = Boolean(
+    (localStorage.getItem("aiCareerHubResumeText") || "").trim()
+  );
   useEffect(() => {
     const fetchJob = async () => {
       try {
@@ -74,10 +79,7 @@ function JobDetails() {
       localStorage.getItem("aiCareerHubResumeText") || "";
 
     const savedAnalysis = localStorage.getItem("aiCareerHubResumeAnalysis");
-
     if (!savedResumeText.trim()) {
-      alert("Please upload and analyze your resume first.");
-      navigate("/student/resume");
       return;
     }
 
@@ -129,9 +131,10 @@ function JobDetails() {
   };
 
   /* -----------------------------------------------------------
-   * Confirm application - send to backend
+   * Apply directly (Apply Now) - uses matchResult if already
+   * calculated, otherwise applies without a match score.
    * ----------------------------------------------------------- */
-  const confirmApply = async () => {
+  const handleApply = async () => {
     setApplyError("");
 
     const token = localStorage.getItem("aiCareerHubToken");
@@ -141,6 +144,8 @@ function JobDetails() {
       navigate("/login");
       return;
     }
+
+    setIsApplying(true);
 
     try {
       const response = await fetch(
@@ -161,17 +166,21 @@ function JobDetails() {
 
       if (!response.ok) {
         setApplyError(data.message || "Unable to apply. Please try again.");
+        setIsApplying(false);
         return;
       }
 
       setAlreadyApplied(true);
-      setShowMatch(false);
-
       navigate("/student/applications");
     } catch (error) {
       console.error("Failed to apply:", error);
       setApplyError("Unable to apply. Please try again.");
+      setIsApplying(false);
     }
+  };
+
+  const goToInterviewPrep = () => {
+    navigate("/student/interview");
   };
 
   return (
@@ -251,7 +260,11 @@ function JobDetails() {
                   <Clock size={14} /> {job.job_type}
                 </span>
 
-                {job.salary && <span>{job.salary}</span>}
+                {job.salary && (
+                  <span style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                    <DollarSign size={14} /> {job.salary}
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -318,13 +331,55 @@ function JobDetails() {
             </div>
           )}
 
-          {applyError && (
+                   {applyError && (
             <p style={{ color: "#b42318", marginTop: "16px" }}>
               {applyError}
             </p>
           )}
 
-          {/* Match Result */}
+          {!hasResume && !alreadyApplied && (
+            <div
+              style={{
+                marginTop: "24px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: "16px",
+                flexWrap: "wrap",
+                padding: "16px 18px",
+                background: "#fffaeb",
+                border: "1px solid #fedf89",
+                borderRadius: "12px",
+              }}
+            >
+              <div>
+                <p style={{ margin: "0 0 4px", fontWeight: 700, color: "#93370d" }}>
+                  Resume required to check your match
+                </p>
+                <p style={{ margin: 0, fontSize: "13px", color: "#b54708" }}>
+                  Upload and analyze your resume to see how well you match
+                  this job.
+                </p>
+              </div>
+
+              <Link
+                to="/student/resume"
+                style={{
+                  padding: "10px 16px",
+                  background: "#5b4bdb",
+                  color: "#ffffff",
+                  borderRadius: "8px",
+                  fontWeight: 700,
+                  fontSize: "13px",
+                  textDecoration: "none",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                Upload Resume
+              </Link>
+            </div>
+          )}
+          {/* Match + Salary + Interview Prep Result */}
           {showMatch && matchResult && (
             <div
               style={{
@@ -425,67 +480,134 @@ function JobDetails() {
                 </div>
               </div>
 
+              {job.salary && (
+                <div
+                  style={{
+                    marginTop: "18px",
+                    padding: "12px 14px",
+                    background: "#ffffff",
+                    border: "1px solid #e0d9ff",
+                    borderRadius: "10px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                  }}
+                >
+                  <DollarSign size={18} color="#5b4bdb" />
+                  <div>
+                    <p style={{ margin: 0, fontSize: "12px", color: "#667085", fontWeight: 600 }}>
+                      SALARY FOR THIS ROLE
+                    </p>
+                    <p style={{ margin: 0, fontSize: "14px", color: "#101828", fontWeight: 700 }}>
+                      {job.salary}
+                    </p>
+                  </div>
+                </div>
+              )}
+
               <button
-                onClick={confirmApply}
+                onClick={goToInterviewPrep}
                 style={{
-                  marginTop: "18px",
+                  marginTop: "14px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "8px",
                   width: "100%",
-                  border: "none",
-                  background: "#5b4bdb",
-                  color: "#ffffff",
+                  border: "1px solid #5b4bdb",
+                  background: "#ffffff",
+                  color: "#5b4bdb",
                   borderRadius: "10px",
                   padding: "12px",
                   fontWeight: 700,
                   cursor: "pointer",
                 }}
               >
-                Confirm Application
+                <MessageSquare size={18} />
+                Start Interview Prep
               </button>
             </div>
           )}
 
-          {/* Apply button */}
-          {!showMatch && (
-            <div style={{ marginTop: "28px" }}>
-              {alreadyApplied ? (
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    color: "#027a48",
-                    fontWeight: 700,
-                    background: "#ecfdf3",
-                    padding: "12px 16px",
-                    borderRadius: "10px",
-                  }}
-                >
-                  <CheckCircle size={18} />
-                  You have already applied to this job.
-                </div>
-              ) : (
-                <button
-                  onClick={calculateMatch}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "8px",
-                    width: "100%",
-                    border: "none",
-                    background: "#5b4bdb",
-                    color: "#ffffff",
-                    borderRadius: "10px",
-                    padding: "13px",
-                    fontWeight: 700,
-                    fontSize: "15px",
-                    cursor: "pointer",
-                  }}
-                >
-                  <FileText size={18} />
-                  Apply Now
-                </button>
-              )}
+          {/* Action buttons */}
+          {alreadyApplied ? (
+            <div
+              style={{
+                marginTop: "28px",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                color: "#027a48",
+                fontWeight: 700,
+                background: "#ecfdf3",
+                padding: "12px 16px",
+                borderRadius: "10px",
+              }}
+            >
+              <CheckCircle size={18} />
+              You have already applied to this job.
+            </div>
+          ) : (
+            <div
+              style={{
+                marginTop: "28px",
+                display: "flex",
+                gap: "12px",
+                flexWrap: "wrap",
+              }}
+            >
+                            <button
+                onClick={calculateMatch}
+                disabled={!hasResume}
+                title={
+                  hasResume
+                    ? ""
+                    : "Upload your resume first to check your match"
+                }
+                style={{
+                  flex: 1,
+                  minWidth: "220px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "8px",
+                  border: "1px solid #5b4bdb",
+                  background: "#ffffff",
+                  color: "#5b4bdb",
+                  borderRadius: "10px",
+                  padding: "13px",
+                  fontWeight: 700,
+                  fontSize: "15px",
+                  cursor: hasResume ? "pointer" : "not-allowed",
+                  opacity: hasResume ? 1 : 0.5,
+                }}
+              >
+                Check My Match & Prepare
+              </button>
+
+              <button
+                onClick={handleApply}
+                disabled={isApplying}
+                style={{
+                  flex: 1,
+                  minWidth: "220px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "8px",
+                  border: "none",
+                  background: isApplying ? "#c7c3df" : "#5b4bdb",
+                  color: "#ffffff",
+                  borderRadius: "10px",
+                  padding: "13px",
+                  fontWeight: 700,
+                  fontSize: "15px",
+                  cursor: isApplying ? "not-allowed" : "pointer",
+                }}
+              >
+                <FileText size={18} />
+                {isApplying ? "Applying..." : "Apply Now"}
+              </button>
             </div>
           )}
         </div>

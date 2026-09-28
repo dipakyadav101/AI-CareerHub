@@ -15,6 +15,7 @@ import LearningRecommendation from "../pages/student/LearningRecommendation";
 import SalaryPrediction from "../pages/student/SalaryPrediction";
 import MyApplications from "../pages/student/MyApplications";
 import SavedJobs from "../pages/student/SavedJobs";
+import CVBuilder from "../pages/student/CVBuilder";
 import Settings from "../pages/student/Settings";
 
 import ProtectedRoute from "../components/ProtectedRoute";
@@ -36,7 +37,14 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
-
+            <Route
+        path="/student/cv-builder"
+        element={
+          <ProtectedRoute>
+            <CVBuilder />
+          </ProtectedRoute>
+        }
+      />
       <Route
         path="/student/jobs/:id"
         element={

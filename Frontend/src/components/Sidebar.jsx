@@ -4,6 +4,7 @@ import {
   LayoutDashboard,
   Briefcase,
   FileText,
+  FilePlus,
   MessageSquare,
   GraduationCap,
   DollarSign,
@@ -61,6 +62,10 @@ function Sidebar() {
         <a href="/student/resume" className="sidebar-link">
           <FileText size={20} />
           <span>Resume Analyzer</span>
+        </a>
+          <a href="/student/cv-builder" className="sidebar-link">
+          <FilePlus size={20} />
+          <span>CV Builder</span>
         </a>
 
         <a href="/student/interview" className="sidebar-link">
