@@ -256,7 +256,7 @@ function JobRecommendation() {
                   marginTop: "18px",
                 }}
               >
-               v
+               
 
                 <Link
                   to={`/student/jobs/${job.id}`}
